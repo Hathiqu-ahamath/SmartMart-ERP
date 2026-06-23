@@ -1,0 +1,9 @@
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+class Supplier extends Model {
+    protected $fillable = ['supplier_code', 'company_name', 'contact_person', 'email', 'phone', 'address', 'is_active'];
+    protected $casts = ['is_active' => 'boolean'];
+    public function purchaseOrders() { return $this->hasMany(PurchaseOrder::class); }
+    public function scopeActive($q) { return $q->where('is_active', true); }
+}
