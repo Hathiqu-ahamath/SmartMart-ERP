@@ -4,14 +4,21 @@
 @section('content')
 <div class="row">
     <div class="col-md-5">
-        <div class="table-container">
-            <div class="text-center mb-4">
-                <div class="display-6 mb-2"><i class="bi bi-person-circle text-primary"></i></div>
-                <h5 class="fw-bold">{{ $user->name }}</h5>
-                <span class="badge bg-info">{{ $user->role->name ?? 'No Role' }}</span>
+        <div class="table-container text-center">
+            <div class="mb-3">
+                @if($user->profile_picture)
+                    <img src="{{ asset('storage/' . $user->profile_picture) }}" alt="{{ $user->name }}"
+                         class="rounded-circle border border-3 border-primary shadow-sm"
+                         style="width: 120px; height: 120px; object-fit: cover;">
+                @else
+                    <div class="display-4 mb-2"><i class="bi bi-person-circle text-primary"></i></div>
+                @endif
             </div>
-            <table class="table">
+            <h5 class="fw-bold">{{ $user->name }}</h5>
+            <span class="badge bg-info mb-3">{{ $user->role->name ?? 'No Role' }}</span>
+            <table class="table text-start">
                 <tr><th>Email</th><td>{{ $user->email }}</td></tr>
+                <tr><th>Employee Code</th><td>{{ $user->employee_code ?? '—' }}</td></tr>
                 <tr><th>Member Since</th><td>{{ $user->created_at->format('d M Y') }}</td></tr>
             </table>
         </div>
@@ -19,7 +26,7 @@
     <div class="col-md-7">
         <div class="table-container">
             <h5 class="fw-bold mb-3">Edit Profile</h5>
-            <form method="POST" action="{{ route('profile.update') }}">
+            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="row g-3">
@@ -32,6 +39,18 @@
                         <label class="form-label">Email</label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}" required>
                         @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Profile Picture</label>
+                        <input type="file" name="profile_picture" class="form-control @error('profile_picture') is-invalid @enderror" accept="image/jpeg,image/png,image/gif,image/webp">
+                        @error('profile_picture') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <div class="form-text">Allowed: jpeg, png, gif, webp &mdash; Max: 2MB</div>
+                        @if($user->profile_picture)
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" name="remove_picture" id="remove_picture" value="1">
+                                <label class="form-check-label text-danger" for="remove_picture">Remove current picture</label>
+                            </div>
+                        @endif
                     </div>
                     <hr class="my-2">
                     <h6 class="fw-bold">Change Password (optional)</h6>

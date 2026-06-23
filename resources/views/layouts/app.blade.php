@@ -353,7 +353,14 @@
             <div class="navbar-top">
                 <div class="page-title">@yield('page-title', 'Dashboard')</div>
                 <div class="user-info">
-                    <a href="{{ route('profile.show') }}" class="text-decoration-none text-dark me-3"><i class="bi bi-person-circle"></i> {{ auth()->user()->name }}</a>
+                    <a href="{{ route('profile.show') }}" class="text-decoration-none text-dark me-3 d-flex align-items-center gap-2">
+                        @if(auth()->user()->profile_picture)
+                            <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" alt="" class="rounded-circle" style="width: 28px; height: 28px; object-fit: cover;">
+                        @else
+                            <i class="bi bi-person-circle fs-5"></i>
+                        @endif
+                        {{ auth()->user()->name }}
+                    </a>
                     <form action="{{ route('logout') }}" method="POST" class="d-inline">
                         @csrf
                         <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
